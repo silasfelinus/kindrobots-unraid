@@ -13,7 +13,7 @@
   <Category>Network:Other Tools:System</Category>
   <WebUI>http://[IP]:[PORT:6032]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/proxysql.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/proxysql-icon.png</Icon>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/proxysql-icon.svg</Icon>
   <ExtraParams>--restart=unless-stopped</ExtraParams>
   <PostArgs/>
   <CPUset/>

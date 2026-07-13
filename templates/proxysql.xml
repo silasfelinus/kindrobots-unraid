@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>KindRobots-ProxySQL</Name>
+  <Repository>proxysql/proxysql:latest</Repository>
+  <Registry>https://hub.docker.com/r/proxysql/proxysql</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
+  <Project>https://proxysql.com/</Project>
+  <Overview>ProxySQL database proxy for the Kind Robots stack. It accepts application MySQL/MariaDB connections on port 6033 and maintains a controlled backend pool toward MariaDB. Keep the admin interface on port 6032 private.</Overview>
+  <Category>Network:Other Tools:System</Category>
+  <WebUI>http://[IP]:[PORT:6032]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/proxysql.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/proxysql-icon.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>0</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>Do not expose admin port 6032 to the public internet. Create the proxysql.cnf file before first start; see the repository setup guide.</Requires>
+
+  <Config Name="MySQL Client Port" Target="6033" Default="6033" Mode="tcp" Description="Application-facing MySQL/MariaDB protocol port. Point Kind Robots at this port after ProxySQL is configured and tested." Type="Port" Display="always" Required="true" Mask="false">6033</Config>
+  <Config Name="Admin Port" Target="6032" Default="6032" Mode="tcp" Description="ProxySQL administration port. Restrict this port to the Unraid LAN; never forward it publicly." Type="Port" Display="advanced" Required="true" Mask="false">6032</Config>
+  <Config Name="ProxySQL Data" Target="/var/lib/proxysql" Default="/mnt/user/appdata/proxysql/data" Mode="rw" Description="Persistent ProxySQL runtime database and state." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/proxysql/data</Config>
+  <Config Name="ProxySQL Config" Target="/etc/proxysql.cnf" Default="/mnt/user/appdata/proxysql/proxysql.cnf" Mode="rw" Description="ProxySQL bootstrap configuration file. Create this host file using docs/proxysql.md before starting the container." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/proxysql/proxysql.cnf</Config>
+</Container>

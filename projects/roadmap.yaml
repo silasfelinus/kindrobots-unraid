@@ -1,0 +1,88 @@
+version: 1
+project: kindrobots-unraid
+objective: Publish a reliable Unraid catalog for the Kind Robots ecosystem.
+
+phases:
+  - id: foundation
+    title: Catalog foundation
+    status: active
+    tasks:
+      - id: catalog-structure
+        title: Establish template, docs, catalog, and validation structure
+        status: done
+      - id: proxysql-template
+        title: Create first ProxySQL Unraid template
+        status: done
+      - id: proxysql-test
+        title: Install and test ProxySQL on Alexandria Unraid
+        status: ready
+        depends_on: [proxysql-template]
+      - id: template-validation
+        title: Validate XML and catalog files in GitHub Actions
+        status: done
+
+  - id: database-resilience
+    title: Database resilience
+    status: active
+    tasks:
+      - id: configure-proxysql
+        title: Configure ProxySQL users, backend hostgroup, monitoring, and limits
+        status: ready
+        depends_on: [proxysql-test]
+      - id: switch-kind-robots
+        title: Point Kind Robots DATABASE_URL at ProxySQL
+        status: blocked
+        depends_on: [configure-proxysql]
+      - id: observe-pooling
+        title: Measure frontend sessions, backend connections, latency, and failures
+        status: blocked
+        depends_on: [switch-kind-robots]
+      - id: rate-limits
+        title: Add API rate limiting, retry discipline, and idempotency for writes
+        status: planned
+      - id: backup-restore
+        title: Automate MariaDB backups and verified restores
+        status: planned
+
+  - id: app-packaging
+    title: Application packaging
+    status: planned
+    tasks:
+      - id: portos-template
+        title: Normalize PortOS into the catalog
+        status: planned
+      - id: kind-robots-template
+        title: Package persistent Kind Robots Nitro/API deployment
+        status: planned
+      - id: conductor-template
+        title: Package Conductor worker and control services
+        status: planned
+      - id: comfyui-template
+        title: Package ComfyUI with GPU and model-volume conventions
+        status: planned
+      - id: forge-template
+        title: Package KnightForge/Forge with GPU and model-volume conventions
+        status: planned
+      - id: ollama-template
+        title: Package Ollama in CPU and NVIDIA modes
+        status: planned
+      - id: backup-template
+        title: Package Kind Backup with retention and restore checks
+        status: planned
+
+  - id: publication
+    title: Community Applications publication
+    status: planned
+    tasks:
+      - id: clean-install-tests
+        title: Test every candidate on a clean Unraid installation
+        status: planned
+      - id: icons-and-support
+        title: Add stable icons, support links, changelogs, and update policies
+        status: planned
+      - id: ca-compliance
+        title: Validate templates against Community Applications requirements
+        status: planned
+      - id: ca-submit
+        title: Publish eligible templates to Community Applications
+        status: planned

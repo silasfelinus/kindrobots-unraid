@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ProxySQL">
+  <rect width="256" height="256" rx="48" fill="#151922"/>
+  <ellipse cx="128" cy="67" rx="72" ry="31" fill="#66c2ff"/>
+  <path d="M56 67v43c0 17 32 31 72 31s72-14 72-31V67c0 17-32 31-72 31S56 84 56 67Z" fill="#3698db"/>
+  <path d="M56 110v43c0 17 32 31 72 31s72-14 72-31v-43c0 17-32 31-72 31s-72-14-72-31Z" fill="#2478b5"/>
+  <path d="M56 153v36c0 17 32 31 72 31s72-14 72-31v-36c0 17-32 31-72 31s-72-14-72-31Z" fill="#175b8e"/>
+  <path d="M93 116h70" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+  <path d="m143 96 21 20-21 20" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

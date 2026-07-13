@@ -1,0 +1,91 @@
+name: Validate Unraid catalog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install YAML parser
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Validate XML and project registry
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          import xml.etree.ElementTree as ET
+          import yaml
+
+          errors = []
+          required_xml = {
+              'Name', 'Repository', 'Network', 'Privileged', 'Support',
+              'Project', 'Overview', 'Category', 'TemplateURL', 'Icon'
+          }
+
+          templates = sorted(Path('templates').glob('*.xml'))
+          if not templates:
+              errors.append('No XML templates found')
+
+          for path in templates:
+              try:
+                  root = ET.parse(path).getroot()
+              except ET.ParseError as exc:
+                  errors.append(f'{path}: invalid XML: {exc}')
+                  continue
+
+              if root.tag != 'Container':
+                  errors.append(f'{path}: root element must be Container')
+
+              present = {child.tag for child in root}
+              missing = sorted(required_xml - present)
+              if missing:
+                  errors.append(f'{path}: missing elements: {", ".join(missing)}')
+
+              names = [node.attrib.get('Name') for node in root.findall('Config')]
+              duplicates = sorted({name for name in names if name and names.count(name) > 1})
+              if duplicates:
+                  errors.append(f'{path}: duplicate Config names: {", ".join(duplicates)}')
+
+          catalog_path = Path('projects/catalog.yaml')
+          roadmap_path = Path('projects/roadmap.yaml')
+          for path in (catalog_path, roadmap_path):
+              if not path.exists():
+                  errors.append(f'Missing {path}')
+
+          if catalog_path.exists():
+              catalog = yaml.safe_load(catalog_path.read_text()) or {}
+              projects = catalog.get('projects', [])
+              ids = [project.get('id') for project in projects]
+              duplicates = sorted({item for item in ids if item and ids.count(item) > 1})
+              if duplicates:
+                  errors.append(f'Duplicate project ids: {", ".join(duplicates)}')
+
+              allowed = set(catalog.get('status_values', []))
+              for project in projects:
+                  project_id = project.get('id', '<missing-id>')
+                  if project.get('status') not in allowed:
+                      errors.append(f'{project_id}: invalid status {project.get("status")!r}')
+                  template = project.get('template')
+                  if template and not Path(template).exists():
+                      errors.append(f'{project_id}: template does not exist: {template}')
+
+          if errors:
+              print('\n'.join(f'ERROR: {error}' for error in errors))
+              sys.exit(1)
+
+          print(f'Validated {len(templates)} template(s) and project catalog.')
+          PY

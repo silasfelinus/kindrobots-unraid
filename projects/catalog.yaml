@@ -1,0 +1,147 @@
+version: 1
+status_values:
+  - discovery
+  - template
+  - tested
+  - community-apps-ready
+  - published
+
+projects:
+  - id: proxysql
+    name: ProxySQL
+    category: infrastructure
+    source: https://github.com/sysown/proxysql
+    image: proxysql/proxysql
+    template: templates/proxysql.xml
+    status: template
+    priority: 1
+    notes: Database proxy and connection-control layer for MariaDB.
+
+  - id: kind-robots
+    name: Kind Robots
+    category: application
+    source: https://github.com/silasfelinus/kind_robots
+    status: discovery
+    priority: 2
+    notes: Primary Nuxt application and API.
+
+  - id: portos
+    name: PortOS
+    category: application
+    source: https://github.com/silasfelinus/PortOS
+    status: discovery
+    priority: 3
+    notes: Existing Unraid-oriented work should be converted into a clean catalog template.
+
+  - id: conductor
+    name: Conductor
+    category: automation
+    source: https://github.com/silasfelinus/conductor
+    status: discovery
+    priority: 4
+    notes: Project coordination and worker automation hub.
+
+  - id: comfyui
+    name: ComfyUI
+    category: ai-art
+    source: https://github.com/silasfelinus/ComfyUI
+    status: discovery
+    priority: 5
+    notes: GPU image workflow service; requires NVIDIA and model-volume conventions.
+
+  - id: knightforge
+    name: KnightForge
+    category: ai-art
+    source: https://github.com/silasfelinus/knightforge
+    status: discovery
+    priority: 6
+    notes: Forge/A1111-family image generation service.
+
+  - id: ollama
+    name: Ollama
+    category: ai-text
+    source: https://github.com/ollama/ollama
+    image: ollama/ollama
+    status: discovery
+    priority: 7
+    notes: Prefer official image and document GPU/CPU modes.
+
+  - id: kind-backup
+    name: Kind Backup
+    category: operations
+    source: https://github.com/silasfelinus/kind-backup
+    status: discovery
+    priority: 8
+    notes: Backup, restore, retention, and verification service.
+
+  - id: app-maker
+    name: App Maker
+    category: development
+    source: https://github.com/silasfelinus/app-maker
+    status: discovery
+    priority: 9
+
+  - id: ai-art-manager
+    name: AI Art Manager
+    category: ai-art
+    source: https://github.com/silasfelinus/ai_art_manager
+    status: discovery
+    priority: 10
+    visibility: private
+
+  - id: acrocat-ranch
+    name: Acrocat Ranch
+    category: application
+    source: https://github.com/silasfelinus/acrocat_ranch
+    status: discovery
+    priority: 11
+
+  - id: ami-bot
+    name: AmiBot
+    category: ai-agent
+    source: https://github.com/silasfelinus/Amibot
+    status: discovery
+    priority: 12
+
+  - id: amintelligence
+    name: AM Intelligence
+    category: ai-agent
+    source: https://github.com/silasfelinus/amintelligence
+    status: discovery
+    priority: 13
+
+  - id: art-academy
+    name: Art Academy
+    category: application
+    source: https://github.com/silasfelinus/art_academy
+    status: discovery
+    priority: 14
+
+  - id: kind-redux
+    name: Kind Redux
+    category: archive
+    source: https://github.com/silasfelinus/kind-redux
+    status: discovery
+    priority: 15
+    notes: Evaluate whether this is an active service or historical source.
+
+  - id: kind-cosmos
+    name: Kind Cosmos
+    category: application
+    source: https://github.com/silasfelinus/kind_cosmos
+    status: discovery
+    priority: 16
+
+  - id: four-o-ghibli
+    name: 4o Ghibli at Home
+    category: ai-art
+    source: https://github.com/silasfelinus/4o-ghibli-at-home-Docker
+    status: discovery
+    priority: 17
+
+  - id: crypto-high
+    name: Crypto High
+    category: application
+    source: https://github.com/silasfelinus/crypto_high
+    status: discovery
+    priority: 18

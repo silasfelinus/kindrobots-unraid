@@ -40,6 +40,10 @@ phases:
         title: Measure frontend sessions, backend connections, latency, and failures
         status: ready
         depends_on: [switch-kind-robots]
+        note: >-
+          Tooling added: scripts/observe-pooling.sh + docs/observability.md.
+          Still needs a live run across a real traffic cycle on Alexandria
+          before this can move to done.
       - id: rate-limits
         title: Add API rate limiting, retry discipline, and idempotency for writes
         status: planned

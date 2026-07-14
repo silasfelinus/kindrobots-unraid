@@ -10,6 +10,7 @@ ProxySQL is the first infrastructure template because it protects the MariaDB ba
 
 - Template: `templates/proxysql.xml`
 - Setup guide: `docs/proxysql.md`
+- Pooling observability: `docs/observability.md` (`scripts/observe-pooling.sh`)
 - Upstream image: `proxysql/proxysql`
 - Admin port `6032` must remain private.
 - MySQL client port `6033` is the application-facing port.

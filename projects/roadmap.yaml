@@ -5,7 +5,7 @@ objective: Publish a reliable Unraid catalog for the Kind Robots ecosystem.
 phases:
   - id: foundation
     title: Catalog foundation
-    status: active
+    status: done
     tasks:
       - id: catalog-structure
         title: Establish template, docs, catalog, and validation structure
@@ -15,8 +15,9 @@ phases:
         status: done
       - id: proxysql-test
         title: Install and test ProxySQL on Alexandria Unraid
-        status: ready
+        status: done
         depends_on: [proxysql-template]
+        note: Verified local routing through ProxySQL to MariaDB on Alexandria.
       - id: template-validation
         title: Validate XML and catalog files in GitHub Actions
         status: done
@@ -27,15 +28,17 @@ phases:
     tasks:
       - id: configure-proxysql
         title: Configure ProxySQL users, backend hostgroup, monitoring, and limits
-        status: ready
+        status: done
         depends_on: [proxysql-test]
+        note: Backend hostgroup, monitor access, application user, TLS, and connection limits are active.
       - id: switch-kind-robots
         title: Point Kind Robots DATABASE_URL at ProxySQL
-        status: blocked
+        status: done
         depends_on: [configure-proxysql]
+        note: Vercel production deploy passed strict TLS verification, Prisma migration checks, and database-backed runtime requests.
       - id: observe-pooling
         title: Measure frontend sessions, backend connections, latency, and failures
-        status: blocked
+        status: ready
         depends_on: [switch-kind-robots]
       - id: rate-limits
         title: Add API rate limiting, retry discipline, and idempotency for writes

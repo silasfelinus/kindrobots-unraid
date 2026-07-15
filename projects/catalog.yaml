@@ -29,9 +29,14 @@ projects:
     name: PortOS
     category: application
     source: https://github.com/silasfelinus/PortOS
-    status: discovery
+    image: pgvector/pgvector:pg17
+    template: templates/portos-postgres.xml
+    status: template
     priority: 3
-    notes: Existing Unraid-oriented work should be converted into a clean catalog template.
+    notes: >
+      PortOS itself is a Node/PM2 process, not containerized, and is not packaged here.
+      This template covers only the optional shared Postgres+pgvector backend
+      (PGMODE=network in PortOS's .env) for users running PortOS on multiple machines.
 
   - id: conductor
     name: Conductor

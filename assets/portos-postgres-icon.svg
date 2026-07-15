@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="PortOS Postgres">
+  <rect width="256" height="256" rx="48" fill="#151922"/>
+  <ellipse cx="128" cy="80" rx="64" ry="28" fill="#336791"/>
+  <path d="M64 80v48c0 15 29 28 64 28s64-13 64-28V80c0 15-29 28-64 28S64 95 64 80Z" fill="#2a557a"/>
+  <path d="M64 128v48c0 15 29 28 64 28s64-13 64-28v-48c0 15-29 28-64 28s-64-13-64-28Z" fill="#1f425f"/>
+  <circle cx="128" cy="80" r="16" fill="#fff"/>
+  <path d="M120 80h16M128 72v16" stroke="#2a557a" stroke-width="4" stroke-linecap="round"/>
+</svg>

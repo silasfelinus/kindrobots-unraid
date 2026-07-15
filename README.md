@@ -15,6 +15,15 @@ ProxySQL is the first infrastructure template because it protects the MariaDB ba
 - Admin port `6032` must remain private.
 - MySQL client port `6033` is the application-facing port.
 
+## PortOS Postgres
+
+A shared PostgreSQL+pgvector backend for users running [PortOS](https://github.com/silasfelinus/PortOS) on more than one machine. PortOS itself stays a native Node/PM2 process on each machine — only its optional networked database moves to Unraid.
+
+- Template: `templates/portos-postgres.xml`
+- Setup guide: `docs/portos-postgres.md`
+- Upstream image: `pgvector/pgvector:pg17` (plain `postgres` lacks the `vector` extension PortOS needs)
+- Tailscale/LAN-only; never expose the Postgres port publicly.
+
 ## Catalog layout
 
 ```text

@@ -57,7 +57,12 @@ phases:
     tasks:
       - id: portos-template
         title: Normalize PortOS into the catalog
-        status: planned
+        status: done
+        note: >-
+          PortOS has no app-level Dockerfile (native Node/PM2 process); only its
+          optional networked Postgres+pgvector backend (PGMODE=network) is
+          Unraid-packageable. Added templates/portos-postgres.xml and
+          docs/portos-postgres.md.
       - id: kind-robots-template
         title: Package persistent Kind Robots Nitro/API deployment
         status: planned

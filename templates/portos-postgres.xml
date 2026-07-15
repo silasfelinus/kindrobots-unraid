@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>PortOS-Postgres</Name>
+  <Repository>pgvector/pgvector:pg17</Repository>
+  <Registry>https://hub.docker.com/r/pgvector/pgvector</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
+  <Project>https://github.com/silasfelinus/PortOS</Project>
+  <Overview>PostgreSQL + pgvector backend for a networked PortOS install. Each PortOS install normally runs its own local Docker/native PostgreSQL, but a machine can instead point at this container over Tailscale (PGMODE=network) so a home server (e.g. Unraid) hosts the database for one or more PortOS machines. Requires the pgvector extension for PortOS's creative-catalog vector search; do not swap in a plain postgres image. Do not expose this container to the public internet.</Overview>
+  <Category>Network:Other Tools:Database</Category>
+  <WebUI/>
+  <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/portos-postgres.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/portos-postgres-icon.svg</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>0</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>Only reachable over Tailscale/LAN, never the public internet. The PortOS `.env` on each connecting machine needs PGMODE=network plus matching PGHOST/PGPORT/PGDATABASE/PGUSER/PGPASSWORD; see the repository setup guide.</Requires>
+
+  <Config Name="Host Port" Target="5432" Default="5432" Mode="tcp" Description="PostgreSQL protocol port. Point each PortOS machine's PGHOST/PGPORT at this over Tailscale/LAN. Never forward this port to the public internet." Type="Port" Display="always" Required="true" Mask="false">5432</Config>
+  <Config Name="Postgres Database" Target="POSTGRES_DB" Default="portos" Mode="" Description="Database name. Must match PGDATABASE in every connecting PortOS install's .env." Type="Variable" Display="always" Required="true" Mask="false">portos</Config>
+  <Config Name="Postgres User" Target="POSTGRES_USER" Default="portos" Mode="" Description="Database role. Must match PGUSER in every connecting PortOS install's .env." Type="Variable" Display="always" Required="true" Mask="false">portos</Config>
+  <Config Name="Postgres Password" Target="POSTGRES_PASSWORD" Default="" Mode="" Description="Database password. Choose a real value here and match it to PGPASSWORD in every connecting PortOS install's .env — do not reuse the local-dev default of 'portos'." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Postgres Data" Target="/var/lib/postgresql/data" Default="/mnt/user/appdata/portos-postgres/data" Mode="rw" Description="Persistent PostgreSQL data directory. Back this up like any other stateful appdata." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/portos-postgres/data</Config>
+</Container>

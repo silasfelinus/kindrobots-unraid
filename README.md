@@ -24,6 +24,15 @@ A shared PostgreSQL+pgvector backend for users running [PortOS](https://github.c
 - Upstream image: `pgvector/pgvector:pg17` (plain `postgres` lacks the `vector` extension PortOS needs)
 - Tailscale/LAN-only; never expose the Postgres port publicly.
 
+## Ollama
+
+Self-hosted local LLM server. Two templates cover CPU-only and NVIDIA-accelerated deployment modes.
+
+- Templates: `templates/ollama.xml` (CPU), `templates/ollama-nvidia.xml` (NVIDIA, requires the Nvidia-Driver Unraid plugin)
+- Setup guide: `docs/ollama.md`
+- Upstream image: `ollama/ollama`
+- API port `11434` must stay LAN/Tailscale-only; the API has no authentication.
+
 ## Catalog layout
 
 ```text

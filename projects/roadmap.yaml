@@ -77,7 +77,13 @@ phases:
         status: planned
       - id: ollama-template
         title: Package Ollama in CPU and NVIDIA modes
-        status: planned
+        status: done
+        note: >-
+          Added templates/ollama.xml (CPU) and templates/ollama-nvidia.xml
+          (--runtime=nvidia, requires the Nvidia-Driver Unraid plugin), both
+          on the official ollama/ollama image. Documented in docs/ollama.md.
+          Not yet clean-install tested on real Unraid hardware — see
+          publication-status note in the doc.
       - id: backup-template
         title: Package Kind Backup with retention and restore checks
         status: planned

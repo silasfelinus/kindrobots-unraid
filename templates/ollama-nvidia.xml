@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Ollama-Nvidia</Name>
+  <Repository>ollama/ollama:latest</Repository>
+  <Registry>https://hub.docker.com/r/ollama/ollama</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
+  <Project>https://github.com/ollama/ollama</Project>
+  <Overview>GPU-accelerated Ollama local LLM server using the Unraid NVIDIA Driver plugin. Serves the Ollama HTTP API on port 11434. Requires the "Nvidia-Driver" Unraid plugin installed and a compatible GPU; use templates/ollama.xml instead on machines without a passed-through NVIDIA GPU. Models are large (several GB each) and persist under the Ollama Models path — plan appdata storage accordingly.</Overview>
+  <Category>AI:Other</Category>
+  <WebUI>http://[IP]:[PORT:11434]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/ollama-nvidia.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/ollama-icon.svg</Icon>
+  <ExtraParams>--restart=unless-stopped --runtime=nvidia</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>0</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>Requires the community "Nvidia-Driver" Unraid plugin and a supported GPU. If the container fails to start with a runtime error, confirm the plugin is installed and the driver version matches the GPU before reporting a template bug. Do not expose this container to the public internet — it has no authentication.</Requires>
+
+  <Config Name="API Port" Target="11434" Default="11434" Mode="tcp" Description="Ollama HTTP API port. Point clients (Open WebUI, CLI, Kind Robots integrations, etc.) at this port. Visiting it directly in a browser just returns the plain-text 'Ollama is running' health check." Type="Port" Display="always" Required="true" Mask="false">11434</Config>
+  <Config Name="Ollama Models" Target="/root/.ollama" Default="/mnt/user/appdata/ollama/data" Mode="rw" Description="Persistent model store and Ollama state. Pulled models live here; back this up or re-pull models are lost on removal." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/ollama/data</Config>
+  <Config Name="NVIDIA_VISIBLE_DEVICES" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="Which GPUs to expose to the container. 'all' exposes every GPU on the host; set a specific GPU UUID to restrict it on multi-GPU systems." Type="Variable" Display="advanced" Required="true" Mask="false">all</Config>
+  <Config Name="NVIDIA_DRIVER_CAPABILITIES" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="NVIDIA container capabilities required for compute workloads. Leave at the default unless you know you need more." Type="Variable" Display="advanced" Required="true" Mask="false">compute,utility</Config>
+</Container>

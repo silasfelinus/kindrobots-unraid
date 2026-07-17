@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ollama">
+  <rect width="256" height="256" rx="48" fill="#1a1a1a"/>
+  <ellipse cx="128" cy="150" rx="58" ry="66" fill="#f5f0e8"/>
+  <path d="M92 96c-6-28 6-52 20-52s16 20 14 40" fill="none" stroke="#f5f0e8" stroke-width="16" stroke-linecap="round"/>
+  <path d="M164 96c6-28-6-52-20-52s-16 20-14 40" fill="none" stroke="#f5f0e8" stroke-width="16" stroke-linecap="round"/>
+  <ellipse cx="106" cy="146" rx="9" ry="12" fill="#1a1a1a"/>
+  <ellipse cx="150" cy="146" rx="9" ry="12" fill="#1a1a1a"/>
+  <path d="M112 182c8 8 24 8 32 0" fill="none" stroke="#1a1a1a" stroke-width="10" stroke-linecap="round"/>
+</svg>

@@ -67,9 +67,13 @@ projects:
     category: ai-text
     source: https://github.com/ollama/ollama
     image: ollama/ollama
-    status: discovery
+    template: templates/ollama.xml
+    status: template
     priority: 7
-    notes: Prefer official image and document GPU/CPU modes.
+    notes: >
+      CPU template at templates/ollama.xml; NVIDIA-accelerated variant at
+      templates/ollama-nvidia.xml (requires the Nvidia-Driver Unraid plugin).
+      Both use the official ollama/ollama image.
 
   - id: kind-backup
     name: Kind Backup

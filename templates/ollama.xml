@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Ollama</Name>
+  <Repository>ollama/ollama:latest</Repository>
+  <Registry>https://hub.docker.com/r/ollama/ollama</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
+  <Project>https://github.com/ollama/ollama</Project>
+  <Overview>CPU-only Ollama local LLM server. Serves the Ollama HTTP API on port 11434 for pulling and running open models. Use this template on machines without a passed-through NVIDIA GPU; see templates/ollama-nvidia.xml for GPU acceleration. Models are large (several GB each) and persist under the Ollama Models path — plan appdata storage accordingly.</Overview>
+  <Category>AI:Other</Category>
+  <WebUI>http://[IP]:[PORT:11434]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/ollama.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/ollama-icon.svg</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>0</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>CPU-only inference. Expect much slower generation than the NVIDIA variant; suitable for small models or infrequent use. Do not expose this container to the public internet — it has no authentication.</Requires>
+
+  <Config Name="API Port" Target="11434" Default="11434" Mode="tcp" Description="Ollama HTTP API port. Point clients (Open WebUI, CLI, Kind Robots integrations, etc.) at this port. Visiting it directly in a browser just returns the plain-text 'Ollama is running' health check." Type="Port" Display="always" Required="true" Mask="false">11434</Config>
+  <Config Name="Ollama Models" Target="/root/.ollama" Default="/mnt/user/appdata/ollama/data" Mode="rw" Description="Persistent model store and Ollama state. Pulled models live here; back this up or re-pull models are lost on removal." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/ollama/data</Config>
+</Container>

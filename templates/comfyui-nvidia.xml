@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>ComfyUI-Nvidia</Name>
+  <Repository>mmartial/comfyui-nvidia-docker:latest</Repository>
+  <Registry>https://hub.docker.com/r/mmartial/comfyui-nvidia-docker</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
+  <Project>https://github.com/silasfelinus/ComfyUI</Project>
+  <Overview>GPU-accelerated ComfyUI node-based image/video generation, using the community-maintained mmartial/comfyui-nvidia-docker image (Kind Robots does not publish its own ComfyUI image). Requires the Unraid "Nvidia-Driver" plugin installed and a compatible NVIDIA GPU passed through. Splits state into a Run path (venv + ComfyUI install, rebuildable) and a Base Directory (models, custom_nodes, input, output — the data actually worth backing up). Checkpoints and other models are large (several GB each); plan appdata/storage accordingly and consider pointing the Base Directory at bulk storage rather than the cache pool.</Overview>
+  <Category>AI:Other</Category>
+  <WebUI>http://[IP]:[PORT:8188]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/comfyui-nvidia.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/assets/comfyui-icon.svg</Icon>
+  <ExtraParams>--restart=unless-stopped --runtime=nvidia</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>0</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>Requires the community "Nvidia-Driver" Unraid plugin and a supported GPU. First start installs ComfyUI and a Python venv into the Run path and can take several minutes with no visible progress in the Unraid UI — watch the container log instead of restarting it. Do not expose this container to the public internet; the ComfyUI Manager can install arbitrary custom nodes and has no authentication of its own.</Requires>
+
+  <Config Name="WebUI Port" Target="8188" Default="8188" Mode="tcp" Description="ComfyUI web interface and API port." Type="Port" Display="always" Required="true" Mask="false">8188</Config>
+  <Config Name="Run Directory" Target="/comfy/mnt" Default="/mnt/user/appdata/comfyui-nvidia/run" Mode="rw" Description="Runtime state: Python venv and the ComfyUI installation itself. Rebuilt automatically on first start; safe to wipe and let the container reinstall if it ever gets into a broken state, but that costs the ~15GB initial install download again." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/comfyui-nvidia/run</Config>
+  <Config Name="Base Directory" Target="/basedir" Default="/mnt/user/appdata/comfyui-nvidia/basedir" Mode="rw" Description="Models, custom_nodes, input, and output. This is the data that actually matters — back it up. Checkpoints/LoRAs/VAEs are large; consider a bulk-storage share instead of the cache pool if space is tight." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/comfyui-nvidia/basedir</Config>
+  <Config Name="BASE_DIRECTORY" Target="BASE_DIRECTORY" Default="/basedir" Mode="" Description="Tells ComfyUI to read models/input/output/custom_nodes from the Base Directory path above rather than under the Run path. Must match the Base Directory container path; leave at the default unless you changed that path's Target." Type="Variable" Display="advanced" Required="true" Mask="false">/basedir</Config>
+  <Config Name="WANTED_UID" Target="WANTED_UID" Default="99" Mode="" Description="UID the container's internal 'comfy' user runs as. Default 99 matches Unraid's 'nobody' user so files written to the Base/Run directories are owned correctly for the Unraid UI and other containers to read." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
+  <Config Name="WANTED_GID" Target="WANTED_GID" Default="100" Mode="" Description="GID the container's internal 'comfy' user runs as. Default 100 matches Unraid's 'users' group." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
+  <Config Name="SECURITY_LEVEL" Target="SECURITY_LEVEL" Default="normal" Mode="" Description="ComfyUI Manager permission level (normal/weak/strict). 'normal' allows installing custom nodes/models through the Manager UI; tighten to 'strict' if this instance is reachable by anyone besides you." Type="Variable" Display="advanced" Required="true" Mask="false">normal</Config>
+  <Config Name="NVIDIA_VISIBLE_DEVICES" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="Which GPUs to expose to the container. 'all' exposes every GPU on the host; set a specific GPU UUID to restrict it on multi-GPU systems." Type="Variable" Display="advanced" Required="true" Mask="false">all</Config>
+</Container>

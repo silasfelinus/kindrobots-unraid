@@ -71,7 +71,16 @@ phases:
         status: planned
       - id: comfyui-template
         title: Package ComfyUI with GPU and model-volume conventions
-        status: planned
+        status: done
+        note: >-
+          ComfyUI has no official upstream Docker image, so
+          templates/comfyui-nvidia.xml packages the community-maintained
+          mmartial/comfyui-nvidia-docker image (NVIDIA-only, requires the
+          Nvidia-Driver plugin). Splits state into a disposable Run
+          directory (venv + ComfyUI install) and a Base Directory (models,
+          custom_nodes, input, output) worth backing up. Documented in
+          docs/comfyui.md. Not yet clean-install tested on real Unraid
+          hardware — see publication-status note in the doc.
       - id: forge-template
         title: Package KnightForge/Forge with GPU and model-volume conventions
         status: planned

@@ -33,6 +33,15 @@ Self-hosted local LLM server. Two templates cover CPU-only and NVIDIA-accelerate
 - Upstream image: `ollama/ollama`
 - API port `11434` must stay LAN/Tailscale-only; the API has no authentication.
 
+## ComfyUI
+
+GPU-accelerated node-based image/video generation. No official upstream Docker image exists, so this template packages the community-maintained `mmartial/comfyui-nvidia-docker` image instead — a deliberate exception to the "prefer official upstream images" principle below, documented rather than silent.
+
+- Template: `templates/comfyui-nvidia.xml` (NVIDIA-only; no CPU variant, requires the Nvidia-Driver Unraid plugin)
+- Setup guide: `docs/comfyui.md`
+- Upstream image: `mmartial/comfyui-nvidia-docker`
+- WebUI port `8188` must stay LAN/Tailscale-only; the ComfyUI Manager can install arbitrary custom nodes and has no authentication.
+
 ## Catalog layout
 
 ```text

@@ -50,9 +50,15 @@ projects:
     name: ComfyUI
     category: ai-art
     source: https://github.com/silasfelinus/ComfyUI
-    status: discovery
+    image: mmartial/comfyui-nvidia-docker
+    template: templates/comfyui-nvidia.xml
+    status: template
     priority: 5
-    notes: GPU image workflow service; requires NVIDIA and model-volume conventions.
+    notes: >
+      No official upstream image exists, so this template packages the
+      community-maintained mmartial/comfyui-nvidia-docker image instead.
+      GPU-only (no CPU variant); Run/Base directory split keeps disposable
+      venv state separate from models and custom_nodes worth backing up.
 
   - id: knightforge
     name: KnightForge

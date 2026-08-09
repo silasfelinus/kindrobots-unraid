@@ -12,6 +12,8 @@ The full Kind Robots Nuxt/Nitro application now has an Unraid template aimed at 
 - Setup guide: `docs/kind-robots.md`
 - Source checkout: `/mnt/user/appdata/kind_robots`
 - First deployment image: locally built `kind-robots:local`
+- Docker network: `cafepurr`
+- Host/WebUI port: `3009` (container port `3000`)
 - Existing `.env`: mounted read-only at runtime rather than copied into the image or duplicated across DockerMan variables
 - Persistent image library: `/mnt/user/pc/kindrobots/images`
 - Common deployment overrides (`APP_BASE_URL`, `AUTH_ORIGIN`, port and paths) remain editable from the Unraid Docker WebGUI
@@ -50,7 +52,7 @@ Self-hosted local LLM server. Two templates cover CPU-only and NVIDIA-accelerate
 
 GPU-accelerated node-based image/video generation. No official upstream Docker image exists, so this template packages the community-maintained `mmartial/comfyui-nvidia-docker` image instead — a deliberate exception to the "prefer official upstream images" principle below, documented rather than silent.
 
-- Template: `templates/comfyui-nvidia.xml` (NVIDIA-only; no CPU variant, requires the Nvidia-Driver Unraid plugin)
+- Templates: `templates/comfyui-nvidia.xml` (NVIDIA-only; no CPU variant, requires the Nvidia-Driver Unraid plugin)
 - Setup guide: `docs/comfyui.md`
 - Upstream image: `mmartial/comfyui-nvidia-docker`
 - WebUI port `8188` must stay LAN/Tailscale-only; the ComfyUI Manager can install arbitrary custom nodes and has no authentication.

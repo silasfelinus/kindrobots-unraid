@@ -21,16 +21,16 @@ projects:
     name: Kind Robots
     category: application
     source: https://github.com/silasfelinus/kind_robots
-    image: kind-robots:local
+    image: ghcr.io/silasfelinus/kind_robots:latest
     template: templates/kind-robots.xml
     status: template
     priority: 2
     notes: >
-      Primary Nuxt/Nitro application and API. The first Unraid deployment builds
-      kind-robots:local from /mnt/user/appdata/kind_robots, mounts the existing repo .env
-      read-only at runtime, and persists /images through /mnt/user/pc/kindrobots/images.
-      A registry-published image can replace the local tag after Alexandria proves the
-      production deployment.
+      Primary Nuxt/Nitro application and API. GitHub Actions publishes main to GHCR
+      as latest plus immutable sha tags. Alexandria mounts the existing repo .env
+      read-only at runtime, persists /images through /mnt/user/pc/kindrobots/images,
+      and can update manually through DockerMan Force Update or automatically through
+      CA Application Auto Update after the GHCR package is made public.
 
   - id: portos
     name: PortOS

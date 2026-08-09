@@ -10,14 +10,15 @@ The full Kind Robots Nuxt/Nitro application now has an Unraid template aimed at 
 
 - Template: `templates/kind-robots.xml`
 - Setup guide: `docs/kind-robots.md`
-- Source checkout: `/mnt/user/appdata/kind_robots`
-- First deployment image: locally built `kind-robots:local`
+- Source/admin checkout: `/mnt/user/appdata/kind_robots`
+- Production image: `ghcr.io/silasfelinus/kind_robots:latest`, published from `main` by GitHub Actions with immutable `sha-...` rollback tags
 - Docker network: `cafepurr`
 - Host/WebUI port: `3009` (container port `3000`)
 - Existing `.env`: mounted read-only at runtime rather than copied into the image or duplicated across DockerMan variables
 - Persistent image library: `/mnt/user/pc/kindrobots/images`
 - Common deployment overrides (`APP_BASE_URL`, `AUTH_ORIGIN`, port and paths) remain editable from the Unraid Docker WebGUI
-- DNS, reverse-proxy publication, and external OAuth-account changes remain deliberate human cutover steps
+- Unraid **Force Update** now pulls the published image; CA Application Auto Update can keep the container current automatically
+- DNS, reverse-proxy publication, GHCR public-visibility confirmation, and external OAuth-account changes remain deliberate human cutover steps
 
 ## First app: ProxySQL
 

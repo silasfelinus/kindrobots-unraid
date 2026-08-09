@@ -3,7 +3,7 @@
   <Name>KindRobots</Name>
   <Repository>kind-robots:local</Repository>
   <Registry/>
-  <Network>bridge</Network>
+  <Network>cafepurr</Network>
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
@@ -11,7 +11,7 @@
   <Project>https://github.com/silasfelinus/kind_robots</Project>
   <Overview>Self-hosted Kind Robots Nuxt/Nitro application. The image is built locally from /mnt/user/appdata/kind_robots, while the container reads the existing repo .env at runtime. Common deployment settings stay editable in the Unraid Docker WebGUI without duplicating the full secret environment.</Overview>
   <Category>Network:Web</Category>
-  <WebUI>http://[IP]:[PORT:3000]</WebUI>
+  <WebUI>http://[IP]:3009</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/kind-robots.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/silasfelinus/kind_robots/main/public/icon-512x512.png</Icon>
   <ExtraParams>--restart=unless-stopped</ExtraParams>

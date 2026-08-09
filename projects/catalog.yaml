@@ -21,9 +21,16 @@ projects:
     name: Kind Robots
     category: application
     source: https://github.com/silasfelinus/kind_robots
-    status: discovery
+    image: kind-robots:local
+    template: templates/kind-robots.xml
+    status: template
     priority: 2
-    notes: Primary Nuxt application and API.
+    notes: >
+      Primary Nuxt/Nitro application and API. The first Unraid deployment builds
+      kind-robots:local from /mnt/user/pc/kind_robots, mounts the existing repo .env
+      read-only at runtime, and persists /images through /mnt/user/pc/kindrobots/images.
+      A registry-published image can replace the local tag after Alexandria proves the
+      production deployment.
 
   - id: portos
     name: PortOS

@@ -4,6 +4,19 @@ A curated catalog of Unraid templates for the Kind Robots self-hosted ecosystem.
 
 This repository is the **master integration layer**. Application source remains in its upstream repository; this catalog provides consistent Unraid installation templates, documentation, validation, upgrade notes, and a path toward Community Applications publication.
 
+## Kind Robots
+
+The full Kind Robots Nuxt/Nitro application now has an Unraid template aimed at making `kindrobots.org` the long-term self-hosted home.
+
+- Template: `templates/kind-robots.xml`
+- Setup guide: `docs/kind-robots.md`
+- Source checkout: `/mnt/user/pc/kind_robots`
+- First deployment image: locally built `kind-robots:local`
+- Existing `.env`: mounted read-only at runtime rather than copied into the image or duplicated across DockerMan variables
+- Persistent image library: `/mnt/user/pc/kindrobots/images`
+- Common deployment overrides (`APP_BASE_URL`, `AUTH_ORIGIN`, port and paths) remain editable from the Unraid Docker WebGUI
+- DNS, reverse-proxy publication, and external OAuth-account changes remain deliberate human cutover steps
+
 ## First app: ProxySQL
 
 ProxySQL is the first infrastructure template because it protects the MariaDB backend from serverless connection storms and gives the stack a controlled database entry point.
@@ -73,4 +86,4 @@ During development, templates can be installed from their raw XML URLs or copied
 
 ## Status
 
-This catalog is under active construction. ProxySQL is the first deployable draft; the remaining projects are registered for systematic packaging.
+This catalog is under active construction. ProxySQL and the Kind Robots application now have deployable templates; the remaining projects are registered for systematic packaging and clean-install verification.

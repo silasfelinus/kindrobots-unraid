@@ -6,8 +6,9 @@ This packages the full Kind Robots Nuxt/Nitro application as the long-term self-
 
 - Source checkout: `/mnt/user/appdata/kind_robots`
 - Runtime image: `kind-robots:local`
+- Docker network: `cafepurr`
 - Container HTTP port: `3000`
-- Default Unraid host port: `3009`
+- Default Unraid host/WebUI port: `3009`
 - Runtime environment file: `/mnt/user/appdata/kind_robots/.env`, mounted read-only
 - Persistent images: `/mnt/user/pc/kindrobots/images`, mounted at `/app/.output/public/images`
 - Canonical public origin: `https://kindrobots.org`
@@ -75,7 +76,8 @@ The supplied defaults are:
 | Setting | Default |
 | --- | --- |
 | Repository | `kind-robots:local` |
-| Network | `bridge` |
+| Network | `cafepurr` |
+| WebUI | `http://<unraid-ip>:3009` |
 | Web Port | `3009` → container `3000` |
 | Environment File | `/mnt/user/appdata/kind_robots/.env` → `/config/kind-robots.env` read-only |
 | Media Images | `/mnt/user/pc/kindrobots/images` → `/app/.output/public/images` |

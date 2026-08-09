@@ -1,11 +1,12 @@
 # Kind Robots on Unraid
 
-This packages the full Kind Robots Nuxt/Nitro application as the long-term self-hosted production service. Vercel can remain online as a parking/fallback deployment during migration, but it is not part of the target request path once `kindrobots.org` moves to Unraid.
+Kind Robots runs as the long-term self-hosted production service on Unraid. Vercel can remain available as a fallback, but `kindrobots.org` is served by the Unraid deployment.
 
 ## Deployment layout
 
-- Source checkout: `/mnt/user/appdata/kind_robots`
-- Runtime image: `kind-robots:local`
+- Source/admin checkout: `/mnt/user/appdata/kind_robots`
+- Runtime image: `ghcr.io/silasfelinus/kind_robots:latest`
+- Immutable image tags: `ghcr.io/silasfelinus/kind_robots:sha-<commit>`
 - Docker network: `cafepurr`
 - Container HTTP port: `3000`
 - Default Unraid host/WebUI port: `3009`
@@ -13,69 +14,51 @@ This packages the full Kind Robots Nuxt/Nitro application as the long-term self-
 - Persistent images: `/mnt/user/pc/kindrobots/images`, mounted at `/app/.output/public/images`
 - Canonical public origin: `https://kindrobots.org`
 
-The container starts Node with `--env-file-if-exists=/config/kind-robots.env`. This means the existing repo `.env` provides the complete application environment without copying every variable into the Unraid template. Values explicitly configured as Docker environment variables in the Unraid WebGUI take precedence over values loaded from the file, so deployment-specific settings such as `APP_BASE_URL` and `AUTH_ORIGIN` remain visible and editable in DockerMan.
+The container starts Node with `--env-file-if-exists=/config/kind-robots.env`. The existing repo `.env` therefore supplies the complete application environment without copying every variable into the Unraid template. Docker environment variables configured in the Unraid WebGUI take precedence, so deployment-specific settings such as `APP_BASE_URL` and `AUTH_ORIGIN` remain visible and editable in DockerMan.
 
-The `.env` file is excluded from the Docker build context. It is mounted only when the container runs and is never baked into the image.
+The `.env` file is excluded from the Docker build context and is never baked into the published image.
 
-## 1. Prepare the repo and environment
+## Production image publishing
 
-The repo is expected at:
+The `kind_robots` repository publishes its Docker image from GitHub Actions whenever `main` changes. A successful build publishes:
 
-```text
-/mnt/user/appdata/kind_robots
-```
+- `ghcr.io/silasfelinus/kind_robots:latest` for normal production updates;
+- `ghcr.io/silasfelinus/kind_robots:sha-<short-commit>` as an immutable rollback target.
 
-Keep the existing `.env` there. Do not copy its secret values into the Unraid template.
+The image also carries OCI labels containing the source repository and exact Git revision. If a Docker build fails, no new `latest` image is published, so Unraid remains on the last deployable image.
 
-Before the production cutover, update the existing `GOOGLE_REDIRECT_URI` value in `.env`. Preserve its current callback path exactly and replace only the old scheme/host with:
+### One-time GHCR visibility gate
 
-```text
-https://kindrobots.org
-```
+GitHub Container Registry creates a new package as private by default. The first published `kind_robots` package must be made **Public** once so Alexandria can pull it anonymously:
 
-For example, if the current value ends in `/some/oauth/callback`, the new value must end in that identical path. The callback path is application behavior, not a deployment guess.
+1. Open the `kind_robots` repository on GitHub and select its **Packages** entry.
+2. Open the `kind_robots` container package and choose **Package settings**.
+3. Under **Danger Zone**, choose **Change visibility → Public** and confirm.
 
-`APP_BASE_URL` and `AUTH_ORIGIN` do not need to be edited in `.env` when using the supplied Unraid template because DockerMan supplies both as `https://kindrobots.org` and those process environment values win over the mounted file.
+Making a package public is irreversible on GitHub, so this remains a deliberate human action. The repository and production image contain no `.env` or runtime secrets.
 
-## 2. Build the local production image
+## Install or migrate the DockerMan template
 
-From the Unraid terminal:
+The catalog template is `templates/kind-robots.xml`. To refresh Alexandria's saved user template:
 
 ```bash
-cd /mnt/user/appdata/kind_robots
-git pull --ff-only
-docker build --pull -t kind-robots:local .
+curl -fsSL https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/kind-robots.xml \
+  -o /boot/config/plugins/dockerMan/templates-user/my-kind-robots.xml
 ```
 
-The Dockerfile uses Node 24 and produces the Nuxt/Nitro production build. The runtime image reads the environment only when the container starts.
-
-The image is deliberately local for this first self-hosted deployment. This avoids adding a registry publishing pipeline or registry credentials to the migration. A future catalog task can publish a versioned image once the deployment has been proven on Alexandria.
-
-## 3. Install the DockerMan template
-
-The catalog template is:
+Then open **Docker → Add Container** and select the KindRobots user template. For an existing locally built KindRobots container, edit/recreate it after the GHCR package is public so its Repository becomes:
 
 ```text
-templates/kind-robots.xml
+ghcr.io/silasfelinus/kind_robots:latest
 ```
 
-For a local development install, copy that XML into Unraid's saved user-template directory as a file such as:
+Unraid preserves the port, paths, public URL, auth origin, networking, and any additional DockerMan variables in its saved template.
 
-```text
-/boot/config/plugins/dockerMan/templates-user/my-kind-robots.xml
-```
-
-Then open **Docker → Add Container** and select the KindRobots user template.
-
-Unraid persists container configuration in its Docker template XML, so after the first install the port, paths, public URL, auth origin, networking, and any additional variables you add are editable from the normal Unraid Docker control panel.
-
-## 4. Verify the DockerMan settings
-
-The supplied defaults are:
+## DockerMan defaults
 
 | Setting | Default |
 | --- | --- |
-| Repository | `kind-robots:local` |
+| Repository | `ghcr.io/silasfelinus/kind_robots:latest` |
 | Network | `cafepurr` |
 | WebUI | `http://<unraid-ip>:3009` |
 | Web Port | `3009` → container `3000` |
@@ -84,55 +67,70 @@ The supplied defaults are:
 | Public App URL | `https://kindrobots.org` |
 | Auth Origin | `https://kindrobots.org` |
 
-Do not expose port `3009` directly to the public internet. The public path should terminate HTTPS at the existing reverse-proxy layer and proxy to the Unraid host/container privately.
+Do not expose port `3009` directly to the public internet. Traefik should reach the container over `cafepurr` as `http://KindRobots:3000`.
 
-If another deployment-specific environment variable later needs to differ from `.env`, add it in the Unraid template as a Docker **Variable**. It will override the same key in the mounted file without requiring the whole `.env` to be duplicated into DockerMan.
+If another deployment-specific environment variable later needs to differ from `.env`, add it in the Unraid template as a Docker **Variable**. It overrides the same key from the mounted file without duplicating the full `.env` into DockerMan.
 
-## 5. Test before DNS changes
+## Updating Kind Robots
 
-Start the container and check its logs from the Docker page. On the LAN, verify:
+### Manual update
+
+Because the container now tracks a registry image, **Force Update** in the Unraid Docker menu is sufficient. Unraid pulls the current `:latest` digest and recreates the container with the saved settings. A server-side `git pull` or `docker build` is no longer required for normal deployment updates.
+
+### Automatic update
+
+The recommended Alexandria automation is the **CA Application Auto Update** plugin, available from the Unraid Apps tab as **Auto Update**. Configure Docker updates for `KindRobots` and use a custom schedule such as every ten minutes:
+
+```cron
+*/10 * * * *
+```
+
+GitHub builds and publishes after `main` changes; the Unraid updater notices the changed `latest` digest on its next pass, pulls it, and recreates KindRobots with the existing DockerMan settings. No inbound GitHub webhook or public management endpoint on Alexandria is required.
+
+Do not schedule Docker updates to overlap appdata backup jobs.
+
+### See exactly what is running
+
+The published image records the Git commit in an OCI label:
+
+```bash
+docker inspect KindRobots --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
+```
+
+The container's image ID and repository can be checked with:
+
+```bash
+docker inspect KindRobots --format '{{.Config.Image}} {{.Image}}'
+```
+
+### Roll back
+
+Every successful publish also creates an immutable `sha-...` tag. To roll back, edit the Unraid container's Repository to the desired tag, for example:
+
+```text
+ghcr.io/silasfelinus/kind_robots:sha-1a2b3c4
+```
+
+Apply the container, verify it, and return the Repository to `:latest` when ready to resume automatic updates.
+
+## Local checkout and environment
+
+Keep `/mnt/user/appdata/kind_robots` because Alexandria uses it for administrative/database scripts and because `.env` is mounted from it. Normal deployment updates no longer depend on the checkout being current.
+
+Before using Google login at `kindrobots.org`, the existing `GOOGLE_REDIRECT_URI` in `.env` must use the `https://kindrobots.org` origin with the application's exact callback path. The Google OAuth client may retain the Vercel callback at the same time.
+
+`APP_BASE_URL` and `AUTH_ORIGIN` do not need to be duplicated in `.env` because DockerMan supplies both as `https://kindrobots.org` and process environment values take precedence.
+
+## Verification
+
+After an update, verify:
 
 ```text
 http://<unraid-ip>:3009/
 http://<unraid-ip>:3009/api/health/database
+https://kindrobots.org/
 ```
 
-Also verify at least one database-backed page/API and a few existing `/images/...` assets. The image mount is persistent outside `docker.img`, and `/app/public` in the runtime image points to the same built public tree so code using a relative `public/images` path reaches the mounted media directory.
+Also verify a database-backed page/API, several existing `/images/...` assets, and Google login. The persistent image library lives outside `docker.img`, and `/app/public` in the runtime image points to the built public tree so code using `public/images` reaches the mounted media directory.
 
-Next, configure the HTTPS reverse proxy for `kindrobots.org` and test the proxy target before changing public DNS. A temporary local hosts-file override or a private test hostname can exercise the full proxy/TLS path while the public domain still points elsewhere.
-
-## 6. Update Google OAuth
-
-In the Google Cloud OAuth client used by Kind Robots:
-
-1. Add the exact new `GOOGLE_REDIRECT_URI` from `.env` to **Authorized redirect URIs**.
-2. If that OAuth client has an **Authorized JavaScript origins** list, add `https://kindrobots.org` there as well.
-3. Keep the old Vercel redirect URI during the migration so the parked deployment remains usable until cutover is verified.
-4. Test Google sign-in through the Unraid/reverse-proxy path before removing any old callback.
-
-OAuth settings are an external account change and are intentionally not encoded into the repository or template.
-
-## 7. Public cutover
-
-DNS is a human-gated production action. After the local application, database health, media, HTTPS proxy, and Google login are all healthy:
-
-1. Point `kindrobots.org` at the public endpoint that reaches the reverse proxy in front of Unraid.
-2. Confirm the public certificate is valid for `kindrobots.org`.
-3. Verify the homepage, `/api/health/database`, a database-backed route, media assets, and Google login from the public domain.
-4. Keep `kind-robots.vercel.app` available as a fallback until the self-hosted deployment has had a stable observation period.
-
-The current Vercel project does not need `kindrobots.org` removed from it during this cutover because the domain is not currently attached there.
-
-## Updating Kind Robots later
-
-For a normal code update:
-
-```bash
-cd /mnt/user/appdata/kind_robots
-git pull --ff-only
-docker build --pull -t kind-robots:local .
-```
-
-Then use the Unraid Docker page to recreate/apply the KindRobots container from its saved template so it starts from the new image while retaining all DockerMan settings and host mounts.
-
-Do not put `.env` into the image or commit it to Git. The mounted file plus explicit DockerMan overrides is the intended configuration contract.
+Do not commit `.env`, registry credentials, or production secrets. The mounted `.env` plus explicit DockerMan overrides is the intended configuration contract.

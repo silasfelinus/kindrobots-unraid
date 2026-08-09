@@ -69,7 +69,7 @@ phases:
         note: >-
           Added templates/kind-robots.xml and docs/kind-robots.md for the full
           Nuxt/Nitro application. The first deployment builds kind-robots:local
-          from /mnt/user/pc/kind_robots, mounts the existing repo .env read-only
+          from /mnt/user/appdata/kind_robots, mounts the existing repo .env read-only
           instead of duplicating secrets into DockerMan, persists images from
           /mnt/user/pc/kindrobots/images, and exposes APP_BASE_URL/AUTH_ORIGIN as
           normal editable Unraid variables. DNS, reverse-proxy publication, and

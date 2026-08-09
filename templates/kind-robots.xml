@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/silasfelinus/kindrobots-unraid/issues</Support>
   <Project>https://github.com/silasfelinus/kind_robots</Project>
-  <Overview>Self-hosted Kind Robots Nuxt/Nitro application. The image is built locally from /mnt/user/pc/kind_robots, while the container reads the existing repo .env at runtime. Common deployment settings stay editable in the Unraid Docker WebGUI without duplicating the full secret environment.</Overview>
+  <Overview>Self-hosted Kind Robots Nuxt/Nitro application. The image is built locally from /mnt/user/appdata/kind_robots, while the container reads the existing repo .env at runtime. Common deployment settings stay editable in the Unraid Docker WebGUI without duplicating the full secret environment.</Overview>
   <Category>Network:Web</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/silasfelinus/kindrobots-unraid/main/templates/kind-robots.xml</TemplateURL>
@@ -20,10 +20,10 @@
   <DateInstalled>0</DateInstalled>
   <DonateText/>
   <DonateLink/>
-  <Requires>Build the local image first from /mnt/user/pc/kind_robots with `docker build -t kind-robots:local .`. Keep the mounted .env private. Publish through an HTTPS reverse proxy; do not expose the application port directly to the internet.</Requires>
+  <Requires>Build the local image first from /mnt/user/appdata/kind_robots with `docker build -t kind-robots:local .`. Keep the mounted .env private. Publish through an HTTPS reverse proxy; do not expose the application port directly to the internet.</Requires>
 
   <Config Name="Web Port" Target="3000" Default="3009" Mode="tcp" Description="Host port for the Kind Robots HTTP server. Point the HTTPS reverse proxy at this port." Type="Port" Display="always" Required="true" Mask="false">3009</Config>
-  <Config Name="Environment File" Target="/config/kind-robots.env" Default="/mnt/user/pc/kind_robots/.env" Mode="ro" Description="Existing Kind Robots .env file. The container loads it at runtime, so the full secret environment does not need to be recreated in DockerMan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/pc/kind_robots/.env</Config>
+  <Config Name="Environment File" Target="/config/kind-robots.env" Default="/mnt/user/appdata/kind_robots/.env" Mode="ro" Description="Existing Kind Robots .env file. The container loads it at runtime, so the full secret environment does not need to be recreated in DockerMan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/kind_robots/.env</Config>
   <Config Name="Media Images" Target="/app/.output/public/images" Default="/mnt/user/pc/kindrobots/images" Mode="rw" Description="Persistent Kind Robots image library. The runtime also exposes /app/public as a symlink to the same built public tree for legacy relative paths." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/pc/kindrobots/images</Config>
   <Config Name="Public App URL" Target="APP_BASE_URL" Default="https://kindrobots.org" Mode="" Description="Canonical public URL used by Kind Robots. Container environment variables override values from the mounted .env file." Type="Variable" Display="always" Required="true" Mask="false">https://kindrobots.org</Config>
   <Config Name="Auth Origin" Target="AUTH_ORIGIN" Default="https://kindrobots.org" Mode="" Description="Canonical authentication origin. Container environment variables override values from the mounted .env file." Type="Variable" Display="always" Required="true" Mask="false">https://kindrobots.org</Config>

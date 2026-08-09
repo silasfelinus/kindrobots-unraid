@@ -64,8 +64,17 @@ phases:
           Unraid-packageable. Added templates/portos-postgres.xml and
           docs/portos-postgres.md.
       - id: kind-robots-template
-        title: Package persistent Kind Robots Nitro/API deployment
-        status: planned
+        title: Package full Kind Robots production deployment for Unraid
+        status: done
+        note: >-
+          Added templates/kind-robots.xml and docs/kind-robots.md for the full
+          Nuxt/Nitro application. The first deployment builds kind-robots:local
+          from /mnt/user/pc/kind_robots, mounts the existing repo .env read-only
+          instead of duplicating secrets into DockerMan, persists images from
+          /mnt/user/pc/kindrobots/images, and exposes APP_BASE_URL/AUTH_ORIGIN as
+          normal editable Unraid variables. DNS, reverse-proxy publication, and
+          Google OAuth account changes remain human-gated cutover steps. Clean
+          install on Alexandria is tracked separately under publication tests.
       - id: conductor-template
         title: Package Conductor worker and control services
         status: planned
@@ -89,7 +98,7 @@ phases:
         status: done
         note: >-
           Added templates/ollama.xml (CPU) and templates/ollama-nvidia.xml
-          (--runtime=nvidia, requires the Nvidia-Driver Unraid plugin), both
+          (--runtime=nvidia, requires the Nvidia-Driver plugin), both
           on the official ollama/ollama image. Documented in docs/ollama.md.
           Not yet clean-install tested on real Unraid hardware — see
           publication-status note in the doc.

@@ -17,7 +17,7 @@ The full Kind Robots Nuxt/Nitro application now has an Unraid template aimed at 
 - Existing `.env`: mounted read-only at runtime rather than copied into the image or duplicated across DockerMan variables
 - Persistent image library: `/mnt/user/pc/kindrobots/images`
 - Common deployment overrides (`APP_BASE_URL`, `AUTH_ORIGIN`, port and paths) remain editable from the Unraid Docker WebGUI
-- Unraid **Force Update** now pulls the published image; CA Application Auto Update can keep the container current automatically
+- Production updates run through `/mnt/user/appdata/kind_robots/scripts/unraid-user-script.sh`, which migrates the matching image before DockerMan replaces the container. Do **not** enable CA Application Auto Update for `KindRobots` or use Force Update as the normal update path; both can replace the app while skipping Prisma migrations.
 - DNS, reverse-proxy publication, GHCR public-visibility confirmation, and external OAuth-account changes remain deliberate human cutover steps
 
 ## First app: ProxySQL

@@ -1,6 +1,6 @@
 # Kind Robots on Unraid
 
-Kind Robots runs as the long-term self-hosted production service on Unraid. Vercel can remain available as a fallback, but `kindrobots.org` is served by the Unraid deployment.
+Kind Robots runs as the long-term self-hosted production service on Unraid. `kindrobots.org` is served by the Unraid deployment.
 
 ## Deployment layout
 
@@ -73,21 +73,41 @@ If another deployment-specific environment variable later needs to differ from `
 
 ## Updating Kind Robots
 
-### Manual update
-
-Because the container now tracks a registry image, **Force Update** in the Unraid Docker menu is sufficient. Unraid pulls the current `:latest` digest and recreates the container with the saved settings. A server-side `git pull` or `docker build` is no longer required for normal deployment updates.
+Kind Robots is schema-bearing software. Replacing the application container without first applying the matching image's Prisma migrations can put new code in front of an old or partially migrated schema. The canonical Alexandria update path is therefore the guarded deployer in the `kind_robots` repository, not a generic Docker image updater.
 
 ### Automatic update
 
-The recommended Alexandria automation is the **CA Application Auto Update** plugin, available from the Unraid Apps tab as **Auto Update**. Configure Docker updates for `KindRobots` and use a custom schedule such as every ten minutes:
+Use the Unraid **User Scripts** plugin to run this launcher every five minutes:
 
-```cron
-*/10 * * * *
+```bash
+#!/bin/bash
+exec /bin/bash /mnt/user/appdata/kind_robots/scripts/unraid-user-script.sh
 ```
 
-GitHub builds and publishes after `main` changes; the Unraid updater notices the changed `latest` digest on its next pass, pulls it, and recreates KindRobots with the existing DockerMan settings. No inbound GitHub webhook or public management endpoint on Alexandria is required.
+The launcher fast-forwards the clean production checkout and delegates to `scripts/deploy-unraid.sh`. That deployer:
 
-Do not schedule Docker updates to overlap appdata backup jobs.
+1. pulls the current GHCR image;
+2. runs that exact image's pending Prisma migrations with the isolated migration credential;
+3. stops immediately if migration or repair fails, leaving the previous application container in place;
+4. only after migration succeeds asks Unraid DockerMan to recreate `KindRobots`;
+5. waits for Docker health before declaring the update complete.
+
+Do **not** enable **CA Application Auto Update** for the `KindRobots` container. It can notice a new `:latest` digest and replace the container without running the migration gate first. The plugin remains fine for unrelated containers that do not need Kind Robots' schema-aware deployment contract.
+
+Do **not** use DockerMan **Force Update** as the routine Kind Robots update path for the same reason. It knows how to recreate a container, but it does not know how to apply Prisma migrations.
+
+### Manual guarded update
+
+When an immediate deployment check is needed, use the same guarded path directly:
+
+```bash
+cd /mnt/user/appdata/kind_robots
+git switch main
+git pull --ff-only
+bash scripts/deploy-unraid.sh
+```
+
+This command is intentionally migration-aware. If it reports a migration failure, read that failure before taking any direct database action; do not bypass it with Force Update.
 
 ### See exactly what is running
 
@@ -97,27 +117,21 @@ The published image records the Git commit in an OCI label:
 docker inspect KindRobots --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
 ```
 
-The container's image ID and repository can be checked with:
+The container's image ID, repository, and health can be checked with:
 
 ```bash
-docker inspect KindRobots --format '{{.Config.Image}} {{.Image}}'
+docker inspect KindRobots --format '{{.Config.Image}} {{.Image}} {{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}'
 ```
 
 ### Roll back
 
-Every successful publish also creates an immutable `sha-...` tag. To roll back, edit the Unraid container's Repository to the desired tag, for example:
-
-```text
-ghcr.io/silasfelinus/kind_robots:sha-1a2b3c4
-```
-
-Apply the container, verify it, and return the Repository to `:latest` when ready to resume automatic updates.
+Every successful publish also creates an immutable `sha-...` tag. A rollback is not automatically schema-safe: the database may already contain migrations newer than the image being selected. Use the Kind Robots migration/deployment runbook to evaluate compatibility before changing the production Repository tag. Do not treat Docker image rollback and database rollback as the same operation.
 
 ## Local checkout and environment
 
-Keep `/mnt/user/appdata/kind_robots` because Alexandria uses it for administrative/database scripts and because `.env` is mounted from it. Normal deployment updates no longer depend on the checkout being current.
+Keep `/mnt/user/appdata/kind_robots` because Alexandria uses it for administrative/database scripts and because `.env` is mounted from it. The guarded User Scripts launcher also keeps this checkout current so the production deploy logic itself tracks `main`.
 
-Before using Google login at `kindrobots.org`, the existing `GOOGLE_REDIRECT_URI` in `.env` must use the `https://kindrobots.org` origin with the application's exact callback path. The Google OAuth client may retain the Vercel callback at the same time.
+Before using Google login at `kindrobots.org`, the existing `GOOGLE_REDIRECT_URI` in `.env` must use the `https://kindrobots.org` origin with the application's exact callback path.
 
 `APP_BASE_URL` and `AUTH_ORIGIN` do not need to be duplicated in `.env` because DockerMan supplies both as `https://kindrobots.org` and process environment values take precedence.
 
